@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
 import Sign_img from "./Sign_img";
+import { NavLink } from "react-router-dom";
 
 const Home = () => {
   const [inpVal, setInpVal] = useState({
@@ -10,6 +11,7 @@ const Home = () => {
     date: "",
     password: "",
   });
+  const [data, setData] = useState([]);
   const getData = (e) => {
     const { value, name } = e.target;
 
@@ -19,6 +21,29 @@ const Home = () => {
         [name]: value,
       };
     });
+  };
+  const addData = (e) => {
+    e.preventDefault();
+    const { name, email, date, password } = inpVal;
+
+    if (name === "" || date === "" || password === "") {
+      alert("Please Enter All the details");
+      return;
+    } else if (password.length < 6) {
+      alert("Use a strong password and should have minimum 6 characters");
+    } else if (!email.includes("@")) {
+      alert("Enter correct Email Address");
+    } else {
+      setData([...data, inpVal]);
+      let newData = [...data, inpVal];
+      localStorage.setItem("useryoutube", JSON.stringify(newData));
+      setInpVal({
+        name: "",
+        email: "",
+        date: "",
+        password: "",
+      });
+    }
   };
   return (
     <>
@@ -31,6 +56,7 @@ const Home = () => {
                 <Form.Control
                   type="text"
                   name="name"
+                  value={inpVal.name}
                   onChange={getData}
                   placeholder="Enter Your Name"
                 />
@@ -39,12 +65,18 @@ const Home = () => {
                 <Form.Control
                   type="email"
                   name="email"
+                  value={inpVal.email}
                   onChange={getData}
                   placeholder="Enter email"
                 />
               </Form.Group>
               <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                <Form.Control type="date" name="date" onChange={getData} />
+                <Form.Control
+                  type="date"
+                  name="date"
+                  value={inpVal.date}
+                  onChange={getData}
+                />
               </Form.Group>
 
               <Form.Group
@@ -53,6 +85,7 @@ const Home = () => {
               >
                 <Form.Control
                   type="password"
+                  value={inpVal.password}
                   name="password"
                   onChange={getData}
                   placeholder="Password"
@@ -63,12 +96,13 @@ const Home = () => {
                 style={{ background: "rgb(67,185,127)", border: "none" }}
                 className="col-lg-6"
                 type="submit"
+                onClick={addData}
               >
                 Submit
               </Button>
             </Form>
             <p className="mt-3">
-              Already Have an Account <span>SignIn</span>
+              Already Have an Account <NavLink to={"/login"}>SignIn</NavLink>
             </p>
           </div>
           <Sign_img />
